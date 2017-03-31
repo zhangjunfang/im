@@ -3,8 +3,6 @@ package client
 import (
 	"errors"
 	"fmt"
-	//	"time"
-	//	"runtime/debug"
 
 	"github.com/donnie4w/go-logger/logger"
 	. "github.com/zhangjunfang/im/common"

@@ -7,10 +7,10 @@ import (
 	"sync"
 	"time"
 
-	. "github.com/zhangjunfang/im/FW"
+	. "github.com/zhangjunfang/im/fw"
 
 	"github.com/donnie4w/go-logger/logger"
-	//	. "github.com/zhangjunfang/im/Map"
+	//	. "github.com/zhangjunfang/im/myMap"
 	. "github.com/zhangjunfang/im/common"
 	. "github.com/zhangjunfang/im/protocol"
 	. "github.com/zhangjunfang/im/utils"

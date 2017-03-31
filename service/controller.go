@@ -11,12 +11,12 @@ import (
 
 	"git.apache.org/thrift.git/lib/go/thrift"
 	"github.com/donnie4w/go-logger/logger"
-	"github.com/zhangjunfang/im/FW"
 	"github.com/zhangjunfang/im/cluster"
 	"github.com/zhangjunfang/im/clusterRoute"
 	"github.com/zhangjunfang/im/clusterServer"
 	. "github.com/zhangjunfang/im/common"
 	. "github.com/zhangjunfang/im/connect"
+	"github.com/zhangjunfang/im/fw"
 	. "github.com/zhangjunfang/im/impl"
 	. "github.com/zhangjunfang/im/protocol"
 	"github.com/zhangjunfang/im/route"
@@ -138,7 +138,7 @@ func controllerHandler(tt thrift.TTransport) {
 			*gorutineclose = true
 		}
 	}()
-	tu := &TimUser{Client: NewTimClient(tt), OverLimit: 3, Fw: FW.CONNECT, IdCardNo: utils.TimeMills(), Sendflag: make(chan string, 0), Sync: new(sync.Mutex)}
+	tu := &TimUser{Client: NewTimClient(tt), OverLimit: 3, Fw: fw.CONNECT, IdCardNo: utils.TimeMills(), Sendflag: make(chan string, 0), Sync: new(sync.Mutex)}
 	TP.AddConnect(tu)
 	defer func() {
 		if cluster.IsCluster() && tu.UserTid != nil {
@@ -190,7 +190,7 @@ func controllerHandler(tt thrift.TTransport) {
 				if tu.OverLimit <= 0 {
 					goto END
 				}
-				if tu.Fw == FW.CLOSE {
+				if tu.Fw == fw.CLOSE {
 					goto END
 				}
 				checkinCluster++
@@ -204,7 +204,7 @@ func controllerHandler(tt thrift.TTransport) {
 					}
 				}
 			}
-			if tu.Fw == FW.AUTH {
+			if tu.Fw == fw.AUTH {
 				er := tu.Ping()
 				if er != nil {
 					logger.Error("ping err", er.Error())
@@ -215,7 +215,7 @@ func controllerHandler(tt thrift.TTransport) {
 				logger.Error("auth over time")
 				goto END
 			}
-			if tu.Fw == FW.CLOSE {
+			if tu.Fw == fw.CLOSE {
 				break
 			}
 		}
@@ -266,7 +266,7 @@ func TimProcessor(client thrift.TTransport, tu *TimUser, gorutineclose *bool, mo
 			logger.Error("Processor error:", err)
 			break
 		}
-		if tu.Fw == FW.CLOSE || tu.OverLimit <= 0 {
+		if tu.Fw == fw.CLOSE || tu.OverLimit <= 0 {
 			break
 		}
 	}

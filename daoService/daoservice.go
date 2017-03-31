@@ -15,14 +15,14 @@ import (
 
 	"github.com/donnie4w/gdao"
 	"github.com/donnie4w/go-logger/logger"
-	"github.com/zhangjunfang/im/DB"
-	. "github.com/zhangjunfang/im/Map"
 	"github.com/zhangjunfang/im/base64Util"
 	. "github.com/zhangjunfang/im/common"
 	"github.com/zhangjunfang/im/connect"
 	"github.com/zhangjunfang/im/dao"
 	"github.com/zhangjunfang/im/hbase"
 	"github.com/zhangjunfang/im/hbaseService"
+	"github.com/zhangjunfang/im/myDb"
+	. "github.com/zhangjunfang/im/myMap"
 	. "github.com/zhangjunfang/im/protocol"
 	"github.com/zhangjunfang/im/utils"
 )
@@ -33,7 +33,7 @@ var domainmap *HashTable = NewHashTable()
 
 func initAuthProviderDB() {
 	logger.Info("initAuthProviderDB")
-	authProviderDB, _ = DB.GetDB(CF.GetKV("tim.mysql.connection", ""), 100, 10)
+	authProviderDB, _ = myDb.GetDB(CF.GetKV("tim.mysql.connection", ""), 100, 10)
 }
 
 func InitDaoservice() {

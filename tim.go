@@ -6,10 +6,10 @@ import (
 	"os"
 
 	"github.com/zhangjunfang/im/cluster"
+	"github.com/zhangjunfang/im/myDb"
 
 	gdao "github.com/donnie4w/gdao"
 	"github.com/donnie4w/go-logger/logger"
-	"github.com/zhangjunfang/im/DB"
 	. "github.com/zhangjunfang/im/common"
 	"github.com/zhangjunfang/im/daoService"
 	. "github.com/zhangjunfang/im/protocol"
@@ -18,7 +18,7 @@ import (
 )
 
 func init() {
-	servername := fmt.Sprint("tim", ProtocolversionName, " server")
+	servername := fmt.Sprint("im", ProtocolversionName, " server")
 	fmt.Println("----------------------------------------------------------")
 	fmt.Println("-------------------- " + servername + " ---------------------")
 	fmt.Println("--------------------------------------------------------")
@@ -31,8 +31,8 @@ func initGdao() {
 		return
 	}
 	logger.Debug("initGdao")
-	DB.Init()
-	gdao.SetDB(DB.Master)
+	myDb.Init()
+	gdao.SetDB(myDb.Master)
 	gdao.SetAdapterType(gdao.MYSQL)
 	gbs, err := gdao.ExecuteQuery("select 1")
 	if err == nil {

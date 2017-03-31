@@ -4,8 +4,8 @@ import (
 	"sync"
 	"time"
 
-	. "github.com/zhangjunfang/im/Map"
 	. "github.com/zhangjunfang/im/clusterClient"
+	. "github.com/zhangjunfang/im/myMap"
 )
 
 var MAX_POOL_SIZE int = 100

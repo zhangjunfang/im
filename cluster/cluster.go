@@ -12,8 +12,8 @@ import (
 	"github.com/zhangjunfang/im/daoService"
 	"github.com/zhangjunfang/im/utils"
 
-	. "github.com/zhangjunfang/im/Map"
 	. "github.com/zhangjunfang/im/common"
+	. "github.com/zhangjunfang/im/myMap"
 	. "github.com/zhangjunfang/im/protocol"
 )
 
@@ -46,9 +46,6 @@ func IsCluster() bool {
 	return flag && ClusterConf.IsCluster == 1
 }
 
-/**
- *
- */
 func GetUserBeans(loginname string) (beans []*CluserUserBean, err error) {
 	defer func() {
 		if err := recover(); err != nil {

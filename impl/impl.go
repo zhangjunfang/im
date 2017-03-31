@@ -1,6 +1,3 @@
-/**
- * donnie4w@gmail.com  tim server
- */
 package impl
 
 import (
@@ -11,12 +8,12 @@ import (
 
 	"git.apache.org/thrift.git/lib/go/thrift"
 	"github.com/donnie4w/go-logger/logger"
-	"github.com/zhangjunfang/im/FW"
 	"github.com/zhangjunfang/im/cluster"
 	"github.com/zhangjunfang/im/clusterRoute"
 	. "github.com/zhangjunfang/im/common"
 	. "github.com/zhangjunfang/im/connect"
 	"github.com/zhangjunfang/im/daoService"
+	"github.com/zhangjunfang/im/fw"
 	. "github.com/zhangjunfang/im/protocol"
 	"github.com/zhangjunfang/im/route"
 	"github.com/zhangjunfang/im/tfClient"
@@ -61,7 +58,7 @@ func (this *TimImpl) TimLogin(tid *Tid, pwd string) (err error) {
 		}
 	}()
 	isAuth := false
-	if this.Tu.Fw == FW.AUTH {
+	if this.Tu.Fw == fw.AUTH {
 		ack := NewTimAckBean()
 		status200, typelogin := "200", "login"
 		ack.AckStatus, ack.AckType = &status200, &typelogin
@@ -86,7 +83,7 @@ func (this *TimImpl) TimLogin(tid *Tid, pwd string) (err error) {
 	if isAuth {
 		ack := NewTimAckBean()
 		this.Tu.UserTid = tid
-		this.Tu.Fw = FW.AUTH
+		this.Tu.Fw = fw.AUTH
 		this.Tu.Auth(tid)
 		if cluster.IsCluster() {
 			loginname, _ := GetLoginName(tid)
@@ -110,7 +107,7 @@ func (this *TimImpl) TimLogin(tid *Tid, pwd string) (err error) {
 // Parameters:
 //  - Ab
 func (this *TimImpl) TimAck(ab *TimAckBean) (err error) {
-	if this.Tu.Fw != FW.AUTH {
+	if this.Tu.Fw != fw.AUTH {
 		panic(fmt.Sprint("not auth:", this.Tu.Fw))
 	}
 	this.Tu.OverLimit = 3
@@ -137,7 +134,7 @@ func (this *TimImpl) TimPresence(pbean *TimPBean) (err error) {
 	if CF.Presence != 1 {
 		return
 	}
-	if this.Tu.Fw != FW.AUTH {
+	if this.Tu.Fw != fw.AUTH {
 		panic("not auth")
 	}
 	//	logger.Debug("pbean", pbean)
@@ -204,7 +201,7 @@ func _TimPresence(this *TimImpl, pbean *TimPBean, isAck bool) (err error) {
 // Parameters:
 //  - Mbean
 func (this *TimImpl) TimMessage(mbean *TimMBean) (err error) {
-	if this.Tu.Fw != FW.AUTH {
+	if this.Tu.Fw != fw.AUTH {
 		panic("not auth")
 	}
 	//	logger.Debug("TimMessage=====>", mbean)
@@ -290,7 +287,7 @@ func _TimMessage(this *TimImpl, mbean *TimMBean) (err error) {
 // Parameters:
 //  - ThreadId
 func (this *TimImpl) TimPing(threadId string) (err error) {
-	if this.Tu.Fw != FW.AUTH {
+	if this.Tu.Fw != fw.AUTH {
 		panic("not auth")
 	}
 	//	logger.Debug("ping>>>>>", threadId)
@@ -556,7 +553,7 @@ func (this *TimImpl) TimResponseMessageList(mbeanList *TimMBeanList, auth *TimAu
 }
 
 func (this *TimImpl) TimProperty(tpb *TimPropertyBean) (err error) {
-	if this.Tu.Fw != FW.AUTH {
+	if this.Tu.Fw != fw.AUTH {
 		panic("not auth")
 	}
 	//	logger.Debug("TimProperty:", tpb)
