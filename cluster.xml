@@ -1,0 +1,12 @@
+<tim>
+	<RedisAddr>10.0.6.222:6379</RedisAddr>  
+	<RedisPwd></RedisPwd>   
+	<RedisDB>1</RedisDB>
+	<RequestAddr>:2426</RequestAddr>
+	<Domain>clusterdomin</Domain>
+	<Username>admin</Username>
+	<Password>123456</Password>
+	<IsCluster>1</IsCluster>
+	<Interflow>1000</Interflow>
+	<Keytimeout>1800</Keytimeout>
+</tim>
