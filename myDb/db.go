@@ -2,12 +2,11 @@ package myDb
 
 import (
 	"database/sql"
+	"fmt"
 	"os"
 
-	. "github.com/zhangjunfang/im/common"
-
-	"github.com/donnie4w/go-logger/logger"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/zhangjunfang/im/common"
 )
 
 var Master *sql.DB
@@ -16,26 +15,26 @@ func Init() {
 	initmaster()
 }
 
+//数据库连接管理
 func initmaster() {
 	if Master == nil {
-		logger.Info("master init")
-		dataSourceName, maxOpenConns, maxIdleConns := CF.GetDB()
+		//获取数据库初始化参数
+		dataSourceName, maxOpenConns, maxIdleConns := common.CF.GetDB()
 		var err error
+		//获取数据库连接
 		Master, err = GetDB(dataSourceName, maxOpenConns, maxIdleConns)
 		if err != nil {
-			logger.Info("any error on open database ", err.Error())
+			fmt.Println("any error on open database ", err.Error())
 			os.Exit(1)
-			return
 		}
 	}
 }
 
 func GetDB(dataSourceName string, maxOpenConns, maxIdleConns int) (db *sql.DB, err error) {
-	logger.Info("init")
 	db, err = sql.Open("mysql", dataSourceName)
 	if err == nil {
 		db.SetMaxOpenConns(maxOpenConns)
 		db.SetMaxIdleConns(maxIdleConns)
 	}
-	return
+	return db, err
 }

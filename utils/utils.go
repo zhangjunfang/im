@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 )
 
@@ -19,33 +20,39 @@ const TIME_FORMAT_MMDD string = "0102"
 //const TIMEFORMAT string = "2006-01-02"
 const TIMEFORMAT_YEAR string = "2006"
 
-var jishu int64 = 0
+var count int64 = 0
 
+//当前时间格式
 func NowTime() string {
 	return time.Now().Format(TIME_FORMAT_YYYYMMDDHHMMSS)
 }
 
+//当前时间格式
 func NowDate() string {
 	return time.Now().Format(TIME_FORMAT_YYYYMMDD)
 }
 
+//字符串时间 格式化为当地时区时间
 func Str2Time(str string) (time.Time, error) {
 	return time.ParseInLocation(TIME_FORMAT_YYYYMMDDHHMMSS, str, time.Local)
 }
+
+//字符串时间 格式化为当地时区时间
 func Str2Date(str string) (time.Time, error) {
 	return time.ParseInLocation(TIME_FORMAT_YYYYMMDD, str, time.Local)
 }
 
+//随机生成随机数
 func GetRand(r int) int {
-	//rand.Seed(time.Now().UnixNano())
-	jishu++
-	if jishu > 100000000 {
-		jishu = 0
+	atomic.AddInt64(&count, 1)
+	if atomic.LoadInt64(&count) > 100000000 {
+		count = 0
 	}
-	rd := rand.New(rand.NewSource(time.Now().UnixNano() + jishu))
+	rd := rand.New(rand.NewSource(time.Now().UnixNano() + count))
 	return rd.Intn(r)
 }
 
+//
 func Chatid(fid, tid, domain string) string {
 	if fid < tid {
 		fid, tid = tid, fid
@@ -74,8 +81,6 @@ func TimeMills() string {
 
 //
 func TimeMillsInt64() int64 {
-	//	s := fmt.Sprint(time.Now().UnixNano() / 1000000)
-	//	i, _ := strconv.ParseInt(s, 10, 64)
 	return time.Now().UnixNano() / 1000000
 }
 

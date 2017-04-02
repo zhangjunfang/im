@@ -10,13 +10,13 @@ import (
 	. "github.com/zhangjunfang/im/common"
 	. "github.com/zhangjunfang/im/connect"
 	"github.com/zhangjunfang/im/daoService"
-	. "github.com/zhangjunfang/im/protocol"
+	"github.com/zhangjunfang/im/protocol"
 	"github.com/zhangjunfang/im/utils"
 )
 
 /**********************************************Message***********************************************/
 /**Message*/
-func RouteMBean(mbean *TimMBean, isSingle, async bool) (mid string, er error, offline bool) {
+func RouteMBean(mbean *protocol.TimMBean, isSingle, async bool) (mid string, er error, offline bool) {
 	defer func() {
 		if err := recover(); err != nil {
 			er = errors.New(fmt.Sprint("RouteMBean:", err))
@@ -97,12 +97,12 @@ func RouteMBean(mbean *TimMBean, isSingle, async bool) (mid string, er error, of
 	return
 }
 
-func SaveMBean(mbean *TimMBean) {
+func SaveMBean(mbean *protocol.TimMBean) {
 	daoService.SaveMBean(mbean)
 }
 
 /**Message List */
-func RouteMBeanList(mbeans []*TimMBean, async bool) {
+func RouteMBeanList(mbeans []*protocol.TimMBean, async bool) {
 	if async {
 		go _RouteMBeanList(mbeans)
 	} else {
@@ -110,19 +110,19 @@ func RouteMBeanList(mbeans []*TimMBean, async bool) {
 	}
 }
 
-func _RouteMBeanList(mbeans []*TimMBean) {
+func _RouteMBeanList(mbeans []*protocol.TimMBean) {
 	defer func() {
 		if err := recover(); err != nil {
 			logger.Error(string(debug.Stack()))
 		}
 	}()
 	if mbeans != nil && len(mbeans) > 0 {
-		loginnamemap := make(map[string][]*TimMBean, 0)
+		loginnamemap := make(map[string][]*protocol.TimMBean, 0)
 		for _, mbean := range mbeans {
 			SaveMBean(mbean)
 			loginname, _ := GetLoginName(mbean.GetToTid())
 			if _, ok := loginnamemap[loginname]; !ok {
-				loginnamemap[loginname] = make([]*TimMBean, 0)
+				loginnamemap[loginname] = make([]*protocol.TimMBean, 0)
 			}
 			loginnamemap[loginname] = append(loginnamemap[loginname], mbean)
 		}
@@ -216,7 +216,7 @@ func RouteOffLineMBean(tu *TimUser) (er error) {
 
 /**********************************************Presence***********************************************/
 /**Presence*/
-func RoutePBean(pbean *TimPBean) {
+func RoutePBean(pbean *protocol.TimPBean) {
 	defer func() {
 		if err := recover(); err != nil {
 			logger.Error("RoutePBean,", err)
@@ -242,7 +242,7 @@ func RoutePBean(pbean *TimPBean) {
 }
 
 /**Presence list */
-func RoutePBeanList(pbeans []*TimPBean) {
+func RoutePBeanList(pbeans []*protocol.TimPBean) {
 	defer func() {
 		if err := recover(); err != nil {
 			logger.Error("RoutePBeanList:", err)
@@ -250,7 +250,7 @@ func RoutePBeanList(pbeans []*TimPBean) {
 		}
 	}()
 	if pbeans != nil && len(pbeans) > 0 {
-		loginnamemap := make(map[string][]*TimPBean, 0)
+		loginnamemap := make(map[string][]*protocol.TimPBean, 0)
 		for _, pbean := range pbeans {
 			fromtid := pbean.GetFromTid()
 			tids := daoService.GetOnlineRoser(fromtid)
@@ -258,7 +258,7 @@ func RoutePBeanList(pbeans []*TimPBean) {
 				for _, tid := range tids {
 					loginname, _ := GetLoginName(tid)
 					if _, ok := loginnamemap[loginname]; !ok {
-						loginnamemap[loginname] = make([]*TimPBean, 0)
+						loginnamemap[loginname] = make([]*protocol.TimPBean, 0)
 					}
 					loginnamemap[loginname] = append(loginnamemap[loginname], pbean)
 				}
@@ -279,7 +279,7 @@ func RoutePBeanList(pbeans []*TimPBean) {
 	}
 }
 
-func RouteSinglePBean(pbean *TimPBean) {
+func RouteSinglePBean(pbean *protocol.TimPBean) {
 	defer func() {
 		if err := recover(); err != nil {
 			logger.Error("RouteSinglePBean,", err)

@@ -29,6 +29,7 @@ type ClusterBean struct {
 }
 
 func (cb *ClusterBean) Init(filexml string) (b bool) {
+	//异常处理
 	defer func() {
 		if err := recover(); err != nil {
 			logger.Error("Init error", err)
@@ -36,11 +37,13 @@ func (cb *ClusterBean) Init(filexml string) (b bool) {
 			b = false
 		}
 	}()
+	//判断文件不存在
 	if !isExist(filexml) {
-		b = false
-		return
+		return false
 	}
+	//打开文件
 	xmlconfig, err := os.Open(filexml)
+	//异常处理
 	if err != nil {
 		panic(fmt.Sprint("xmlconfig is error:", err.Error()))
 		os.Exit(0)
@@ -50,18 +53,16 @@ func (cb *ClusterBean) Init(filexml string) (b bool) {
 		panic(fmt.Sprint("config is error:", err.Error()))
 		os.Exit(1)
 	}
+	//使用dom4g解析xml
 	dom, err := dom4g.LoadByXml(string(config))
 	if err == nil {
 		nodes := dom.AllNodes()
 		if nodes != nil {
-			fmt.Println(`======================cluster start======================`)
-			i := 0
 			for _, node := range nodes {
 				name := node.Name()
 				value := node.Value
 				v := reflect.ValueOf(cb).Elem().FieldByName(name)
 				if v.CanSet() {
-					fmt.Println("set====>", name, value)
 					switch v.Type().Name() {
 					case "string":
 						v.Set(reflect.ValueOf(value))
@@ -71,14 +72,7 @@ func (cb *ClusterBean) Init(filexml string) (b bool) {
 					default:
 						fmt.Println("other type:", v.Type().Name(), ">>>", name)
 					}
-				} else {
-					fmt.Println("no set====>", name, value)
-					i++
 				}
-			}
-			fmt.Println(`=======================cluster end=======================`)
-			if i > 0 {
-				fmt.Println("not set number:", i)
 			}
 		}
 	}

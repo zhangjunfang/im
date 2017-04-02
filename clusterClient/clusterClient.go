@@ -11,7 +11,7 @@ import (
 )
 
 type ClusterClient struct {
-	timclient *ITimClient
+	timclient *ImClient
 	lock      *sync.RWMutex
 	Weight    int
 }

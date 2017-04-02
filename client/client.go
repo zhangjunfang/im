@@ -35,7 +35,7 @@ type Config struct {
 }
 
 type Connect struct {
-	Client      *ITimClient
+	Client      *ImClient
 	FlowConnect FLOW
 	Super       *Cli
 }
@@ -53,7 +53,7 @@ func (this *Connect) Close() {
 	}
 }
 
-func (this *Connect) setITimClient(client *ITimClient) {
+func (this *Connect) setITimClient(client *ImClient) {
 	this.Client = client
 }
 

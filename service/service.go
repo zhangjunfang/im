@@ -5,7 +5,7 @@ import (
 	"net"
 
 	"github.com/donnie4w/go-logger/logger"
-	. "github.com/zhangjunfang/im/common"
+	"github.com/zhangjunfang/im/common"
 )
 
 func Start() {
@@ -13,16 +13,13 @@ func Start() {
 		if err := recover(); err != nil {
 		}
 	}()
-	service := fmt.Sprint(CF.Addr, ":", CF.Port)
-	logger.Debug("listen port:", CF.Port)
+	service := fmt.Sprint(common.CF.Addr, ":", common.CF.Port)
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", service)
 	checkError(err)
 	listener, err := net.ListenTCP("tcp", tcpAddr)
 	checkError(err)
-
 	for {
 		conn, err := listener.Accept()
-		logger.Debug(conn.RemoteAddr().String(), "is linking")
 		if err == nil {
 			go handler(conn)
 		}

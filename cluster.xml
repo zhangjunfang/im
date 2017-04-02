@@ -1,4 +1,4 @@
-<tim>
+<im>
 	<RedisAddr>10.0.6.222:6379</RedisAddr>  
 	<RedisPwd></RedisPwd>   
 	<RedisDB>1</RedisDB>
@@ -9,4 +9,4 @@
 	<IsCluster>1</IsCluster>
 	<Interflow>1000</Interflow>
 	<Keytimeout>1800</Keytimeout>
-</tim>
+</im>

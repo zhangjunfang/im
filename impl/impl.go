@@ -495,7 +495,7 @@ func (this *TimImpl) TimResponseMessageIq(timMsgIq *TimMessageIq, iqType string,
 
 func httpAuth(tid *Tid, pwd, user_auth_url string) (isAuth bool) {
 	var r *TimRemoteUserBean
-	tfClient.HttpClient(func(client *ITimClient) (er error) {
+	tfClient.HttpClient(func(client *ImClient) (er error) {
 		defer func() {
 			if err := recover(); err != nil {
 				er = errors.New(fmt.Sprint(err))

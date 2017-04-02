@@ -6,17 +6,17 @@ import (
 	"github.com/donnie4w/gdao"
 )
 
-type tim_property_Id struct {
+type im_property_Id struct {
 	gdao.Field
 	fieldName  string
 	FieldValue *int32
 }
 
-func (c *tim_property_Id) Name() string {
+func (c *im_property_Id) Name() string {
 	return c.fieldName
 }
 
-func (c *tim_property_Id) Value() interface{} {
+func (c *im_property_Id) Value() interface{} {
 	return c.FieldValue
 }
 
@@ -76,66 +76,66 @@ func (c *tim_property_Remark) Value() interface{} {
 	return c.FieldValue
 }
 
-type Tim_property struct {
+type Im_property struct {
 	gdao.Table
 	Valueint *tim_property_Valueint
 	Valuestr *tim_property_Valuestr
 	Remark   *tim_property_Remark
-	Id       *tim_property_Id
+	Id       *im_property_Id
 	Keyword  *tim_property_Keyword
 }
 
-func (u *Tim_property) GetValuestr() string {
+func (u *Im_property) GetValuestr() string {
 	return *u.Valuestr.FieldValue
 }
 
-func (u *Tim_property) SetValuestr(arg string) {
+func (u *Im_property) SetValuestr(arg string) {
 	u.Table.ModifyMap[u.Valuestr.fieldName] = arg
 	v := string(arg)
 	u.Valuestr.FieldValue = &v
 }
 
-func (u *Tim_property) GetRemark() string {
+func (u *Im_property) GetRemark() string {
 	return *u.Remark.FieldValue
 }
 
-func (u *Tim_property) SetRemark(arg string) {
+func (u *Im_property) SetRemark(arg string) {
 	u.Table.ModifyMap[u.Remark.fieldName] = arg
 	v := string(arg)
 	u.Remark.FieldValue = &v
 }
 
-func (u *Tim_property) GetId() int32 {
+func (u *Im_property) GetId() int32 {
 	return *u.Id.FieldValue
 }
 
-func (u *Tim_property) SetId(arg int64) {
+func (u *Im_property) SetId(arg int64) {
 	u.Table.ModifyMap[u.Id.fieldName] = arg
 	v := int32(arg)
 	u.Id.FieldValue = &v
 }
 
-func (u *Tim_property) GetKeyword() string {
+func (u *Im_property) GetKeyword() string {
 	return *u.Keyword.FieldValue
 }
 
-func (u *Tim_property) SetKeyword(arg string) {
+func (u *Im_property) SetKeyword(arg string) {
 	u.Table.ModifyMap[u.Keyword.fieldName] = arg
 	v := string(arg)
 	u.Keyword.FieldValue = &v
 }
 
-func (u *Tim_property) GetValueint() int32 {
+func (u *Im_property) GetValueint() int32 {
 	return *u.Valueint.FieldValue
 }
 
-func (u *Tim_property) SetValueint(arg int64) {
+func (u *Im_property) SetValueint(arg int64) {
 	u.Table.ModifyMap[u.Valueint.fieldName] = arg
 	v := int32(arg)
 	u.Valueint.FieldValue = &v
 }
 
-func (t *Tim_property) Query(columns ...gdao.Column) ([]Tim_property, error) {
+func (t *Im_property) Query(columns ...gdao.Column) ([]Im_property, error) {
 	if columns == nil {
 		columns = []gdao.Column{t.Id, t.Keyword, t.Valueint, t.Valuestr, t.Remark}
 	}
@@ -143,18 +143,18 @@ func (t *Tim_property) Query(columns ...gdao.Column) ([]Tim_property, error) {
 	if rs == nil || err != nil {
 		return nil, err
 	}
-	ts := make([]Tim_property, 0, len(rs))
+	ts := make([]Im_property, 0, len(rs))
 	c := make(chan int16, len(rs))
 	for _, rows := range rs {
-		t := NewTim_property()
-		go copyTim_property(c, rows, t, columns)
+		t := NewIm_property()
+		go copyIm_property(c, rows, t, columns)
 		<-c
 		ts = append(ts, *t)
 	}
 	return ts, nil
 }
 
-func copyTim_property(channle chan int16, rows []interface{}, t *Tim_property, columns []gdao.Column) {
+func copyIm_property(channle chan int16, rows []interface{}, t *Im_property, columns []gdao.Column) {
 	defer func() { channle <- 1 }()
 	for j, core := range rows {
 		if core == nil {
@@ -166,7 +166,7 @@ func copyTim_property(channle chan int16, rows []interface{}, t *Tim_property, c
 	}
 }
 
-func (t *Tim_property) QuerySingle(columns ...gdao.Column) (*Tim_property, error) {
+func (t *Im_property) QuerySingle(columns ...gdao.Column) (*Im_property, error) {
 	if columns == nil {
 		columns = []gdao.Column{t.Id, t.Keyword, t.Valueint, t.Valuestr, t.Remark}
 	}
@@ -174,7 +174,7 @@ func (t *Tim_property) QuerySingle(columns ...gdao.Column) (*Tim_property, error
 	if rs == nil || err != nil {
 		return nil, err
 	}
-	rt := NewTim_property()
+	rt := NewIm_property()
 	for j, core := range rs {
 		if core == nil {
 			continue
@@ -186,7 +186,7 @@ func (t *Tim_property) QuerySingle(columns ...gdao.Column) (*Tim_property, error
 	return rt, nil
 }
 
-func (t *Tim_property) Select(columns ...gdao.Column) (*Tim_property, error) {
+func (t *Im_property) Select(columns ...gdao.Column) (*Im_property, error) {
 	if columns == nil {
 		columns = []gdao.Column{t.Id, t.Keyword, t.Valueint, t.Valuestr, t.Remark}
 	}
@@ -197,7 +197,7 @@ func (t *Tim_property) Select(columns ...gdao.Column) (*Tim_property, error) {
 	}
 	buff := make([]interface{}, len(columns))
 	if rows.Next() {
-		n := NewTim_property()
+		n := NewIm_property()
 		cpTim_property(buff, n, columns)
 		row_err := rows.Scan(buff...)
 		if row_err != nil {
@@ -208,7 +208,7 @@ func (t *Tim_property) Select(columns ...gdao.Column) (*Tim_property, error) {
 	return nil, nil
 }
 
-func (t *Tim_property) Selects(columns ...gdao.Column) ([]*Tim_property, error) {
+func (t *Im_property) Selects(columns ...gdao.Column) ([]*Im_property, error) {
 	if columns == nil {
 		columns = []gdao.Column{t.Id, t.Keyword, t.Valueint, t.Valuestr, t.Remark}
 	}
@@ -217,10 +217,10 @@ func (t *Tim_property) Selects(columns ...gdao.Column) ([]*Tim_property, error) 
 	if err != nil || rows == nil {
 		return nil, err
 	}
-	ns := make([]*Tim_property, 0)
+	ns := make([]*Im_property, 0)
 	buff := make([]interface{}, len(columns))
 	for rows.Next() {
-		n := NewTim_property()
+		n := NewIm_property()
 		cpTim_property(buff, n, columns)
 		row_err := rows.Scan(buff...)
 		if row_err != nil {
@@ -231,7 +231,7 @@ func (t *Tim_property) Selects(columns ...gdao.Column) ([]*Tim_property, error) 
 	return ns, nil
 }
 
-func cpTim_property(buff []interface{}, t *Tim_property, columns []gdao.Column) {
+func cpTim_property(buff []interface{}, t *Im_property, columns []gdao.Column) {
 	for i, column := range columns {
 		field := column.Name()
 		switch field {
@@ -249,18 +249,18 @@ func cpTim_property(buff []interface{}, t *Tim_property, columns []gdao.Column) 
 	}
 }
 
-func NewTim_property(tableName ...string) *Tim_property {
+func NewIm_property(tableName ...string) *Im_property {
 	valueint := &tim_property_Valueint{fieldName: "valueint"}
 	valueint.Field.FieldName = "valueint"
 	valuestr := &tim_property_Valuestr{fieldName: "valuestr"}
 	valuestr.Field.FieldName = "valuestr"
 	remark := &tim_property_Remark{fieldName: "remark"}
 	remark.Field.FieldName = "remark"
-	id := &tim_property_Id{fieldName: "id"}
+	id := &im_property_Id{fieldName: "id"}
 	id.Field.FieldName = "id"
 	keyword := &tim_property_Keyword{fieldName: "keyword"}
 	keyword.Field.FieldName = "keyword"
-	table := &Tim_property{Id: id, Keyword: keyword, Valueint: valueint, Valuestr: valuestr, Remark: remark}
+	table := &Im_property{Id: id, Keyword: keyword, Valueint: valueint, Valuestr: valuestr, Remark: remark}
 	table.Table.ModifyMap = make(map[string]interface{})
 	if len(tableName) == 1 {
 		table.Table.TableName = tableName[0]

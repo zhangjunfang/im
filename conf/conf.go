@@ -54,7 +54,7 @@ type ConfBean struct {
 	HbaseTimeoutConns int
 	HbaseIdleTimeOut  int
 
-	DataBase int //0mysql 1hbase
+	DataBase int //0 mysql 1 hbase
 }
 
 /**设置Ip信息*/
@@ -69,7 +69,7 @@ func (cf *ConfBean) GetHttpPort() (port int) {
 	if cf.HttpPort > 0 {
 		port = cf.HttpPort
 	} else {
-		port = 3939
+		port = 9090
 	}
 	return
 }
@@ -136,6 +136,7 @@ func (cf *ConfBean) GetConfLoad(defaultTime int) int {
 	return defaultTime
 }
 
+//读取配置文件并解析
 func (cf *ConfBean) Init(filexml string) {
 	xmlstr := ""
 	if isExist(filexml) {
@@ -151,54 +152,50 @@ func (cf *ConfBean) Init(filexml string) {
 		}
 		xmlstr = string(config)
 	} else {
-		xmlstr = timxml
+		xmlstr = imxml
 	}
-
+	//dom4g解析xm文件
 	dom, err := dom4g.LoadByXml(xmlstr)
 	if err == nil {
+		//拿到所有节点
 		nodes := dom.AllNodes()
 		if nodes != nil {
-			fmt.Println(`======================conf start======================`)
-			i := 0
 			for _, node := range nodes {
+				//获取节点名称
 				name := node.Name()
+				//节点对应的值
 				value := node.Value
+				//反射获取ConfBean对象，对应的元素的名称
 				v := reflect.ValueOf(cf).Elem().FieldByName(name)
+				//是否可以设置参数
 				if v.CanSet() {
-					fmt.Println("set====>", name, value)
-					switch v.Type().Name() {
+					switch v.Type().Name() { //获取数据类型
 					case "string":
-						v.Set(reflect.ValueOf(value))
+						v.Set(reflect.ValueOf(value)) //获取节点数据  并设置
 					case "int":
-						i, _ := strconv.Atoi(value)
+						i, _ := strconv.Atoi(value) //类型转换
 						v.Set(reflect.ValueOf(i))
 					default:
 						fmt.Println("other type:", v.Type().Name(), ">>>", name)
 					}
-				} else {
-					fmt.Println("no set====>", name, value)
-					i++
 				}
-			}
-			fmt.Println(`=======================conf end=======================`)
-			if i > 0 {
-				fmt.Println("not set number:", i)
 			}
 		}
 	}
 }
 
-var timxml = `<tim>
+//默认配置参数
+var imxml = `<im>
 	<Port>3737</Port>
 	<Addr>0.0.0.0</Addr>
 	<HeartBeat>120</HeartBeat>
-	<Logdir>./timLog</Logdir>
-	<LogName>tim.log</LogName>
-	<HttpPort>3939</HttpPort>
+	<Logdir>./imLog</Logdir>
+	<LogName>im.log</LogName>
+	<HttpPort>9090</HttpPort>
 	<Db_Exsit>0</Db_Exsit>
 	<Presence>1</Presence>
 	<ConfirmAck>0</ConfirmAck>
 	<MustAuth>0</MustAuth>
 	<SingleClient>0</SingleClient>
 	<Interflow>0</Interflow>
-</tim>`
+</im>`

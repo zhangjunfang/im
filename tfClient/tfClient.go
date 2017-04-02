@@ -7,10 +7,10 @@ import (
 
 	"git.apache.org/thrift.git/lib/go/thrift"
 	"github.com/donnie4w/go-logger/logger"
-	. "github.com/zhangjunfang/im/protocol"
+	"github.com/zhangjunfang/im/protocol"
 )
 
-func HttpClient(f func(*ITimClient) error, urlstr string) (err error) {
+func HttpClient(f func(*protocol.ImClient) error, urlstr string) (err error) {
 	defer func() {
 		if er := recover(); er != nil {
 			err = errors.New(fmt.Sprint(er))
@@ -19,20 +19,19 @@ func HttpClient(f func(*ITimClient) error, urlstr string) (err error) {
 		}
 	}()
 	if urlstr != "" {
-		logger.Debug("httpClient url:", urlstr)
 		transport, err := thrift.NewTHttpPostClient(urlstr)
 		defer transport.Close()
 		if err == nil {
 			factory := thrift.NewTCompactProtocolFactory()
 			transport.Open()
-			itimClient := NewITimClientFactory(transport, factory)
-			err = f(itimClient)
+			imClient := protocol.NewITimClientFactory(transport, factory)
+			err = f(imClient)
 		}
 	}
 	return
 }
 
-func HttpClient2(f func(*ITimClient) error, user_auth_url string) (err error) {
+func HttpClient2(f func(*protocol.ImClient) error, user_auth_url string) (err error) {
 	defer func() {
 		if er := recover(); er != nil {
 			err = errors.New(fmt.Sprint(er))
@@ -41,13 +40,12 @@ func HttpClient2(f func(*ITimClient) error, user_auth_url string) (err error) {
 		}
 	}()
 	if user_auth_url != "" {
-		logger.Debug("httpClient url:", user_auth_url)
 		transport, err := thrift.NewTHttpPostClient(user_auth_url)
 		defer transport.Close()
 		if err == nil {
 			factory := thrift.NewTCompactProtocolFactory()
 			transport.Open()
-			itimClient := NewITimClientFactory(transport, factory)
+			itimClient := protocol.NewITimClientFactory(transport, factory)
 			err = f(itimClient)
 		}
 	} else {
@@ -56,19 +54,18 @@ func HttpClient2(f func(*ITimClient) error, user_auth_url string) (err error) {
 	return
 }
 
-func TcpClient(f func(*ITimClient), urlstr string) {
+func TcpClient(f func(*protocol.ImClient), urlstr string) {
 	defer func() {
 		if err := recover(); err != nil {
 			logger.Error(err)
 		}
 	}()
 	if urlstr != "" {
-		logger.Debug("tcpClient addr:", urlstr)
 		transport, err := thrift.NewTSocket(urlstr)
 		defer transport.Close()
 		if err == nil {
 			protocolFactory := thrift.NewTCompactProtocolFactory()
-			itimClient := NewITimClientFactory(transport, protocolFactory)
+			itimClient := protocol.NewITimClientFactory(transport, protocolFactory)
 			f(itimClient)
 		}
 	}

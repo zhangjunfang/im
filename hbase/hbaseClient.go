@@ -8,10 +8,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	. "github.com/zhangjunfang/im/common"
-
 	"git.apache.org/thrift.git/lib/go/thrift"
 	"github.com/donnie4w/go-logger/logger"
+	"github.com/zhangjunfang/im/common"
 	"github.com/zhangjunfang/im/utils"
 )
 
@@ -26,7 +25,7 @@ var once sync.Once
 
 func Init() {
 	once.Do(func() {
-		maxOpenConns, maxIdleConns, minOpenConns, timeoutConns, IdleTimeOut = CF.GetHbaseArgs(100, 50, 10, 5, 180)
+		maxOpenConns, maxIdleConns, minOpenConns, timeoutConns, IdleTimeOut = common.CF.GetHbaseArgs(100, 50, 10, 5, 180)
 		pool = make(chan *clientBean, maxOpenConns)
 		initmin := minOpenConns - len(pool)
 		if initmin > 0 {
@@ -146,7 +145,7 @@ func _NewHbaseClient() (hbaseClient *THBaseServiceClient) {
 			logger.Error(string(debug.Stack()))
 		}
 	}()
-	addr := CF.HbaseAddr
+	addr := common.CF.HbaseAddr
 	if addr == "" {
 		addr = "127.0.0.1:9090"
 	}

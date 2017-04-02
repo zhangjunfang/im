@@ -16,10 +16,10 @@ func TickerStart() {
 			logger.Error(string(debug.Stack()))
 		}
 	}()
-	logger.Debug("tickerStart>>>>")
 	go Ticker4Second(CF.GetConfLoad(600), daoService.AddConf)
 }
 
+//每个几秒执行一次function函数
 func Ticker4Second(second int, function func()) {
 	defer func() {
 		if err := recover(); err != nil {

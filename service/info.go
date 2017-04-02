@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/donnie4w/go-logger/logger"
-	. "github.com/zhangjunfang/im/connect"
+	"github.com/zhangjunfang/im/connect"
 	"github.com/zhangjunfang/im/hbase"
 )
 
@@ -18,9 +18,6 @@ func info(w http.ResponseWriter, r *http.Request) {
 			logger.Error(debug.Stack())
 		}
 	}()
-	logger.Debug("RemoteAddr:", r.RemoteAddr)
-	logger.Debug("X-Forwarded-For:", r.Header.Get("X-Forwarded-For"))
-	logger.Debug("ContentLength:", r.ContentLength)
 	X_Forwarded_For := r.Header.Get("X-Forwarded-For")
 	ss := strings.Split(r.RemoteAddr, ":")
 	ipaddr := ss[0]
@@ -31,7 +28,7 @@ func info(w http.ResponseWriter, r *http.Request) {
 	if r.ContentLength >= 2*1024*1024 {
 		return
 	}
-	str := fmt.Sprintln("user:", TP.Len4P(), "===>", TP.Len4PU())
+	str := fmt.Sprintln("user:", connect.TP.Len4P(), "===>", connect.TP.Len4PU())
 	io.WriteString(w, str)
 }
 
@@ -41,9 +38,6 @@ func userInfo(w http.ResponseWriter, r *http.Request) {
 			logger.Error(debug.Stack())
 		}
 	}()
-	logger.Debug("RemoteAddr:", r.RemoteAddr)
-	logger.Debug("X-Forwarded-For:", r.Header.Get("X-Forwarded-For"))
-	logger.Debug("ContentLength:", r.ContentLength)
 	X_Forwarded_For := r.Header.Get("X-Forwarded-For")
 	ss := strings.Split(r.RemoteAddr, ":")
 	ipaddr := ss[0]
@@ -54,7 +48,7 @@ func userInfo(w http.ResponseWriter, r *http.Request) {
 	if r.ContentLength >= 2*1024*1024 {
 		return
 	}
-	io.WriteString(w, TP.PrintUsersInfo())
+	io.WriteString(w, connect.TP.PrintUsersInfo())
 }
 
 func hbaseclient(w http.ResponseWriter, r *http.Request) {
@@ -63,9 +57,6 @@ func hbaseclient(w http.ResponseWriter, r *http.Request) {
 			logger.Error(debug.Stack())
 		}
 	}()
-	logger.Debug("RemoteAddr:", r.RemoteAddr)
-	logger.Debug("X-Forwarded-For:", r.Header.Get("X-Forwarded-For"))
-	logger.Debug("ContentLength:", r.ContentLength)
 	X_Forwarded_For := r.Header.Get("X-Forwarded-For")
 	ss := strings.Split(r.RemoteAddr, ":")
 	ipaddr := ss[0]

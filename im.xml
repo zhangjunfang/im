@@ -1,0 +1,20 @@
+<im>
+	<Port>6666</Port>
+	<Addr>0.0.0.0</Addr>
+	<HeartBeat>120</HeartBeat>
+	<Logdir>./im</Logdir>
+	<LogName>im.log</LogName>
+	<Db_dataSourceName>root:Cme0328@@tcp(10.0.4.245:3306)/im</Db_dataSourceName>
+	<Db_MaxOpenConns>20</Db_MaxOpenConns>
+	<Db_MaxIdleConns>5</Db_MaxIdleConns>
+	<HttpPort>0</HttpPort>
+	<Db_Exsit>1</Db_Exsit>
+	<Presence>1</Presence>
+	<ConfirmAck>0</ConfirmAck>
+	<MustAuth>0</MustAuth>
+	<SingleClient>1</SingleClient>
+	<Interflow>0</Interflow>
+	<TLSPort>0</TLSPort>
+	<TLSServerPem></TLSServerPem>
+	<TLSServerKey></TLSServerKey>
+</im>

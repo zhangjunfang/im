@@ -6,6 +6,7 @@ package protocol
 import (
 	"bytes"
 	"fmt"
+
 	"git.apache.org/thrift.git/lib/go/thrift"
 )
 
@@ -145,7 +146,7 @@ type ITim interface {
 	TimResponseMessageList(mbeanList *TimMBeanList, auth *TimAuth) (r *TimResponseBean, err error)
 }
 
-type ITimClient struct {
+type ImClient struct {
 	Transport       thrift.TTransport
 	ProtocolFactory thrift.TProtocolFactory
 	InputProtocol   thrift.TProtocol
@@ -153,8 +154,8 @@ type ITimClient struct {
 	SeqId           int32
 }
 
-func NewITimClientFactory(t thrift.TTransport, f thrift.TProtocolFactory) *ITimClient {
-	return &ITimClient{Transport: t,
+func NewITimClientFactory(t thrift.TTransport, f thrift.TProtocolFactory) *ImClient {
+	return &ImClient{Transport: t,
 		ProtocolFactory: f,
 		InputProtocol:   f.GetProtocol(t),
 		OutputProtocol:  f.GetProtocol(t),
@@ -162,8 +163,8 @@ func NewITimClientFactory(t thrift.TTransport, f thrift.TProtocolFactory) *ITimC
 	}
 }
 
-func NewITimClientProtocol(t thrift.TTransport, iprot thrift.TProtocol, oprot thrift.TProtocol) *ITimClient {
-	return &ITimClient{Transport: t,
+func NewITimClientProtocol(t thrift.TTransport, iprot thrift.TProtocol, oprot thrift.TProtocol) *ImClient {
+	return &ImClient{Transport: t,
 		ProtocolFactory: nil,
 		InputProtocol:   iprot,
 		OutputProtocol:  oprot,
@@ -175,14 +176,14 @@ func NewITimClientProtocol(t thrift.TTransport, iprot thrift.TProtocol, oprot th
 //
 // Parameters:
 //  - Param
-func (p *ITimClient) TimStream(param *TimParam) (err error) {
+func (p *ImClient) TimStream(param *TimParam) (err error) {
 	if err = p.sendTimStream(param); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimStream(param *TimParam) (err error) {
+func (p *ImClient) sendTimStream(param *TimParam) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -205,14 +206,14 @@ func (p *ITimClient) sendTimStream(param *TimParam) (err error) {
 }
 
 // tls协议
-func (p *ITimClient) TimStarttls() (err error) {
+func (p *ImClient) TimStarttls() (err error) {
 	if err = p.sendTimStarttls(); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimStarttls() (err error) {
+func (p *ImClient) sendTimStarttls() (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -237,14 +238,14 @@ func (p *ITimClient) sendTimStarttls() (err error) {
 // Parameters:
 //  - Tid
 //  - Pwd
-func (p *ITimClient) TimLogin(tid *Tid, pwd string) (err error) {
+func (p *ImClient) TimLogin(tid *Tid, pwd string) (err error) {
 	if err = p.sendTimLogin(tid, pwd); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimLogin(tid *Tid, pwd string) (err error) {
+func (p *ImClient) sendTimLogin(tid *Tid, pwd string) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -271,14 +272,14 @@ func (p *ITimClient) sendTimLogin(tid *Tid, pwd string) (err error) {
 //
 // Parameters:
 //  - Ab
-func (p *ITimClient) TimAck(ab *TimAckBean) (err error) {
+func (p *ImClient) TimAck(ab *TimAckBean) (err error) {
 	if err = p.sendTimAck(ab); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimAck(ab *TimAckBean) (err error) {
+func (p *ImClient) sendTimAck(ab *TimAckBean) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -304,14 +305,14 @@ func (p *ITimClient) sendTimAck(ab *TimAckBean) (err error) {
 //
 // Parameters:
 //  - Pbean
-func (p *ITimClient) TimPresence(pbean *TimPBean) (err error) {
+func (p *ImClient) TimPresence(pbean *TimPBean) (err error) {
 	if err = p.sendTimPresence(pbean); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimPresence(pbean *TimPBean) (err error) {
+func (p *ImClient) sendTimPresence(pbean *TimPBean) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -337,14 +338,14 @@ func (p *ITimClient) sendTimPresence(pbean *TimPBean) (err error) {
 //
 // Parameters:
 //  - Mbean
-func (p *ITimClient) TimMessage(mbean *TimMBean) (err error) {
+func (p *ImClient) TimMessage(mbean *TimMBean) (err error) {
 	if err = p.sendTimMessage(mbean); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimMessage(mbean *TimMBean) (err error) {
+func (p *ImClient) sendTimMessage(mbean *TimMBean) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -370,14 +371,14 @@ func (p *ITimClient) sendTimMessage(mbean *TimMBean) (err error) {
 //
 // Parameters:
 //  - ThreadId
-func (p *ITimClient) TimPing(threadId string) (err error) {
+func (p *ImClient) TimPing(threadId string) (err error) {
 	if err = p.sendTimPing(threadId); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimPing(threadId string) (err error) {
+func (p *ImClient) sendTimPing(threadId string) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -403,14 +404,14 @@ func (p *ITimClient) sendTimPing(threadId string) (err error) {
 //
 // Parameters:
 //  - E
-func (p *ITimClient) TimError(e *TimError) (err error) {
+func (p *ImClient) TimError(e *TimError) (err error) {
 	if err = p.sendTimError(e); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimError(e *TimError) (err error) {
+func (p *ImClient) sendTimError(e *TimError) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -433,14 +434,14 @@ func (p *ITimClient) sendTimError(e *TimError) (err error) {
 }
 
 // 登出协议
-func (p *ITimClient) TimLogout() (err error) {
+func (p *ImClient) TimLogout() (err error) {
 	if err = p.sendTimLogout(); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimLogout() (err error) {
+func (p *ImClient) sendTimLogout() (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -465,14 +466,14 @@ func (p *ITimClient) sendTimLogout() (err error) {
 // Parameters:
 //  - Tid
 //  - Auth
-func (p *ITimClient) TimRegist(tid *Tid, auth string) (err error) {
+func (p *ImClient) TimRegist(tid *Tid, auth string) (err error) {
 	if err = p.sendTimRegist(tid, auth); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimRegist(tid *Tid, auth string) (err error) {
+func (p *ImClient) sendTimRegist(tid *Tid, auth string) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -499,14 +500,14 @@ func (p *ITimClient) sendTimRegist(tid *Tid, auth string) (err error) {
 //
 // Parameters:
 //  - Roster
-func (p *ITimClient) TimRoser(roster *TimRoster) (err error) {
+func (p *ImClient) TimRoser(roster *TimRoster) (err error) {
 	if err = p.sendTimRoser(roster); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimRoser(roster *TimRoster) (err error) {
+func (p *ImClient) sendTimRoser(roster *TimRoster) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -532,14 +533,14 @@ func (p *ITimClient) sendTimRoser(roster *TimRoster) (err error) {
 //
 // Parameters:
 //  - MbeanList
-func (p *ITimClient) TimMessageList(mbeanList *TimMBeanList) (err error) {
+func (p *ImClient) TimMessageList(mbeanList *TimMBeanList) (err error) {
 	if err = p.sendTimMessageList(mbeanList); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimMessageList(mbeanList *TimMBeanList) (err error) {
+func (p *ImClient) sendTimMessageList(mbeanList *TimMBeanList) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -565,14 +566,14 @@ func (p *ITimClient) sendTimMessageList(mbeanList *TimMBeanList) (err error) {
 //
 // Parameters:
 //  - PbeanList
-func (p *ITimClient) TimPresenceList(pbeanList *TimPBeanList) (err error) {
+func (p *ImClient) TimPresenceList(pbeanList *TimPBeanList) (err error) {
 	if err = p.sendTimPresenceList(pbeanList); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimPresenceList(pbeanList *TimPBeanList) (err error) {
+func (p *ImClient) sendTimPresenceList(pbeanList *TimPBeanList) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -599,14 +600,14 @@ func (p *ITimClient) sendTimPresenceList(pbeanList *TimPBeanList) (err error) {
 // Parameters:
 //  - TimMsgIq
 //  - IqType
-func (p *ITimClient) TimMessageIq(timMsgIq *TimMessageIq, iqType string) (err error) {
+func (p *ImClient) TimMessageIq(timMsgIq *TimMessageIq, iqType string) (err error) {
 	if err = p.sendTimMessageIq(timMsgIq, iqType); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimMessageIq(timMsgIq *TimMessageIq, iqType string) (err error) {
+func (p *ImClient) sendTimMessageIq(timMsgIq *TimMessageIq, iqType string) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -633,14 +634,14 @@ func (p *ITimClient) sendTimMessageIq(timMsgIq *TimMessageIq, iqType string) (er
 //
 // Parameters:
 //  - Mbean
-func (p *ITimClient) TimMessageResult_(mbean *TimMBean) (err error) {
+func (p *ImClient) TimMessageResult_(mbean *TimMBean) (err error) {
 	if err = p.sendTimMessageResult_(mbean); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimMessageResult_(mbean *TimMBean) (err error) {
+func (p *ImClient) sendTimMessageResult_(mbean *TimMBean) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -666,14 +667,14 @@ func (p *ITimClient) sendTimMessageResult_(mbean *TimMBean) (err error) {
 //
 // Parameters:
 //  - Tpb
-func (p *ITimClient) TimProperty(tpb *TimPropertyBean) (err error) {
+func (p *ImClient) TimProperty(tpb *TimPropertyBean) (err error) {
 	if err = p.sendTimProperty(tpb); err != nil {
 		return
 	}
 	return
 }
 
-func (p *ITimClient) sendTimProperty(tpb *TimPropertyBean) (err error) {
+func (p *ImClient) sendTimProperty(tpb *TimPropertyBean) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -701,14 +702,14 @@ func (p *ITimClient) sendTimProperty(tpb *TimPropertyBean) (err error) {
 //  - Tid
 //  - Pwd
 //  - Auth
-func (p *ITimClient) TimRemoteUserAuth(tid *Tid, pwd string, auth *TimAuth) (r *TimRemoteUserBean, err error) {
+func (p *ImClient) TimRemoteUserAuth(tid *Tid, pwd string, auth *TimAuth) (r *TimRemoteUserBean, err error) {
 	if err = p.sendTimRemoteUserAuth(tid, pwd, auth); err != nil {
 		return
 	}
 	return p.recvTimRemoteUserAuth()
 }
 
-func (p *ITimClient) sendTimRemoteUserAuth(tid *Tid, pwd string, auth *TimAuth) (err error) {
+func (p *ImClient) sendTimRemoteUserAuth(tid *Tid, pwd string, auth *TimAuth) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -732,7 +733,7 @@ func (p *ITimClient) sendTimRemoteUserAuth(tid *Tid, pwd string, auth *TimAuth) 
 	return oprot.Flush()
 }
 
-func (p *ITimClient) recvTimRemoteUserAuth() (value *TimRemoteUserBean, err error) {
+func (p *ImClient) recvTimRemoteUserAuth() (value *TimRemoteUserBean, err error) {
 	iprot := p.InputProtocol
 	if iprot == nil {
 		iprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -783,14 +784,14 @@ func (p *ITimClient) recvTimRemoteUserAuth() (value *TimRemoteUserBean, err erro
 // Parameters:
 //  - Tid
 //  - Auth
-func (p *ITimClient) TimRemoteUserGet(tid *Tid, auth *TimAuth) (r *TimRemoteUserBean, err error) {
+func (p *ImClient) TimRemoteUserGet(tid *Tid, auth *TimAuth) (r *TimRemoteUserBean, err error) {
 	if err = p.sendTimRemoteUserGet(tid, auth); err != nil {
 		return
 	}
 	return p.recvTimRemoteUserGet()
 }
 
-func (p *ITimClient) sendTimRemoteUserGet(tid *Tid, auth *TimAuth) (err error) {
+func (p *ImClient) sendTimRemoteUserGet(tid *Tid, auth *TimAuth) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -813,7 +814,7 @@ func (p *ITimClient) sendTimRemoteUserGet(tid *Tid, auth *TimAuth) (err error) {
 	return oprot.Flush()
 }
 
-func (p *ITimClient) recvTimRemoteUserGet() (value *TimRemoteUserBean, err error) {
+func (p *ImClient) recvTimRemoteUserGet() (value *TimRemoteUserBean, err error) {
 	iprot := p.InputProtocol
 	if iprot == nil {
 		iprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -865,14 +866,14 @@ func (p *ITimClient) recvTimRemoteUserGet() (value *TimRemoteUserBean, err error
 //  - Tid
 //  - Ub
 //  - Auth
-func (p *ITimClient) TimRemoteUserEdit(tid *Tid, ub *TimUserBean, auth *TimAuth) (r *TimRemoteUserBean, err error) {
+func (p *ImClient) TimRemoteUserEdit(tid *Tid, ub *TimUserBean, auth *TimAuth) (r *TimRemoteUserBean, err error) {
 	if err = p.sendTimRemoteUserEdit(tid, ub, auth); err != nil {
 		return
 	}
 	return p.recvTimRemoteUserEdit()
 }
 
-func (p *ITimClient) sendTimRemoteUserEdit(tid *Tid, ub *TimUserBean, auth *TimAuth) (err error) {
+func (p *ImClient) sendTimRemoteUserEdit(tid *Tid, ub *TimUserBean, auth *TimAuth) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -896,7 +897,7 @@ func (p *ITimClient) sendTimRemoteUserEdit(tid *Tid, ub *TimUserBean, auth *TimA
 	return oprot.Flush()
 }
 
-func (p *ITimClient) recvTimRemoteUserEdit() (value *TimRemoteUserBean, err error) {
+func (p *ImClient) recvTimRemoteUserEdit() (value *TimRemoteUserBean, err error) {
 	iprot := p.InputProtocol
 	if iprot == nil {
 		iprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -947,14 +948,14 @@ func (p *ITimClient) recvTimRemoteUserEdit() (value *TimRemoteUserBean, err erro
 // Parameters:
 //  - Pbean
 //  - Auth
-func (p *ITimClient) TimResponsePresence(pbean *TimPBean, auth *TimAuth) (r *TimResponseBean, err error) {
+func (p *ImClient) TimResponsePresence(pbean *TimPBean, auth *TimAuth) (r *TimResponseBean, err error) {
 	if err = p.sendTimResponsePresence(pbean, auth); err != nil {
 		return
 	}
 	return p.recvTimResponsePresence()
 }
 
-func (p *ITimClient) sendTimResponsePresence(pbean *TimPBean, auth *TimAuth) (err error) {
+func (p *ImClient) sendTimResponsePresence(pbean *TimPBean, auth *TimAuth) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -977,7 +978,7 @@ func (p *ITimClient) sendTimResponsePresence(pbean *TimPBean, auth *TimAuth) (er
 	return oprot.Flush()
 }
 
-func (p *ITimClient) recvTimResponsePresence() (value *TimResponseBean, err error) {
+func (p *ImClient) recvTimResponsePresence() (value *TimResponseBean, err error) {
 	iprot := p.InputProtocol
 	if iprot == nil {
 		iprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -1028,14 +1029,14 @@ func (p *ITimClient) recvTimResponsePresence() (value *TimResponseBean, err erro
 // Parameters:
 //  - Mbean
 //  - Auth
-func (p *ITimClient) TimResponseMessage(mbean *TimMBean, auth *TimAuth) (r *TimResponseBean, err error) {
+func (p *ImClient) TimResponseMessage(mbean *TimMBean, auth *TimAuth) (r *TimResponseBean, err error) {
 	if err = p.sendTimResponseMessage(mbean, auth); err != nil {
 		return
 	}
 	return p.recvTimResponseMessage()
 }
 
-func (p *ITimClient) sendTimResponseMessage(mbean *TimMBean, auth *TimAuth) (err error) {
+func (p *ImClient) sendTimResponseMessage(mbean *TimMBean, auth *TimAuth) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -1058,7 +1059,7 @@ func (p *ITimClient) sendTimResponseMessage(mbean *TimMBean, auth *TimAuth) (err
 	return oprot.Flush()
 }
 
-func (p *ITimClient) recvTimResponseMessage() (value *TimResponseBean, err error) {
+func (p *ImClient) recvTimResponseMessage() (value *TimResponseBean, err error) {
 	iprot := p.InputProtocol
 	if iprot == nil {
 		iprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -1110,14 +1111,14 @@ func (p *ITimClient) recvTimResponseMessage() (value *TimResponseBean, err error
 //  - TimMsgIq
 //  - IqType
 //  - Auth
-func (p *ITimClient) TimResponseMessageIq(timMsgIq *TimMessageIq, iqType string, auth *TimAuth) (r *TimMBeanList, err error) {
+func (p *ImClient) TimResponseMessageIq(timMsgIq *TimMessageIq, iqType string, auth *TimAuth) (r *TimMBeanList, err error) {
 	if err = p.sendTimResponseMessageIq(timMsgIq, iqType, auth); err != nil {
 		return
 	}
 	return p.recvTimResponseMessageIq()
 }
 
-func (p *ITimClient) sendTimResponseMessageIq(timMsgIq *TimMessageIq, iqType string, auth *TimAuth) (err error) {
+func (p *ImClient) sendTimResponseMessageIq(timMsgIq *TimMessageIq, iqType string, auth *TimAuth) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -1141,7 +1142,7 @@ func (p *ITimClient) sendTimResponseMessageIq(timMsgIq *TimMessageIq, iqType str
 	return oprot.Flush()
 }
 
-func (p *ITimClient) recvTimResponseMessageIq() (value *TimMBeanList, err error) {
+func (p *ImClient) recvTimResponseMessageIq() (value *TimMBeanList, err error) {
 	iprot := p.InputProtocol
 	if iprot == nil {
 		iprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -1192,14 +1193,14 @@ func (p *ITimClient) recvTimResponseMessageIq() (value *TimMBeanList, err error)
 // Parameters:
 //  - PbeanList
 //  - Auth
-func (p *ITimClient) TimResponsePresenceList(pbeanList *TimPBeanList, auth *TimAuth) (r *TimResponseBean, err error) {
+func (p *ImClient) TimResponsePresenceList(pbeanList *TimPBeanList, auth *TimAuth) (r *TimResponseBean, err error) {
 	if err = p.sendTimResponsePresenceList(pbeanList, auth); err != nil {
 		return
 	}
 	return p.recvTimResponsePresenceList()
 }
 
-func (p *ITimClient) sendTimResponsePresenceList(pbeanList *TimPBeanList, auth *TimAuth) (err error) {
+func (p *ImClient) sendTimResponsePresenceList(pbeanList *TimPBeanList, auth *TimAuth) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -1222,7 +1223,7 @@ func (p *ITimClient) sendTimResponsePresenceList(pbeanList *TimPBeanList, auth *
 	return oprot.Flush()
 }
 
-func (p *ITimClient) recvTimResponsePresenceList() (value *TimResponseBean, err error) {
+func (p *ImClient) recvTimResponsePresenceList() (value *TimResponseBean, err error) {
 	iprot := p.InputProtocol
 	if iprot == nil {
 		iprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -1273,14 +1274,14 @@ func (p *ITimClient) recvTimResponsePresenceList() (value *TimResponseBean, err 
 // Parameters:
 //  - MbeanList
 //  - Auth
-func (p *ITimClient) TimResponseMessageList(mbeanList *TimMBeanList, auth *TimAuth) (r *TimResponseBean, err error) {
+func (p *ImClient) TimResponseMessageList(mbeanList *TimMBeanList, auth *TimAuth) (r *TimResponseBean, err error) {
 	if err = p.sendTimResponseMessageList(mbeanList, auth); err != nil {
 		return
 	}
 	return p.recvTimResponseMessageList()
 }
 
-func (p *ITimClient) sendTimResponseMessageList(mbeanList *TimMBeanList, auth *TimAuth) (err error) {
+func (p *ImClient) sendTimResponseMessageList(mbeanList *TimMBeanList, auth *TimAuth) (err error) {
 	oprot := p.OutputProtocol
 	if oprot == nil {
 		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -1303,7 +1304,7 @@ func (p *ITimClient) sendTimResponseMessageList(mbeanList *TimMBeanList, auth *T
 	return oprot.Flush()
 }
 
-func (p *ITimClient) recvTimResponseMessageList() (value *TimResponseBean, err error) {
+func (p *ImClient) recvTimResponseMessageList() (value *TimResponseBean, err error) {
 	iprot := p.InputProtocol
 	if iprot == nil {
 		iprot = p.ProtocolFactory.GetProtocol(p.Transport)

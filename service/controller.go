@@ -14,11 +14,11 @@ import (
 	"github.com/zhangjunfang/im/cluster"
 	"github.com/zhangjunfang/im/clusterRoute"
 	"github.com/zhangjunfang/im/clusterServer"
-	. "github.com/zhangjunfang/im/common"
-	. "github.com/zhangjunfang/im/connect"
+	"github.com/zhangjunfang/im/common"
+	"github.com/zhangjunfang/im/connect"
 	"github.com/zhangjunfang/im/fw"
-	. "github.com/zhangjunfang/im/impl"
-	. "github.com/zhangjunfang/im/protocol"
+	"github.com/zhangjunfang/im/impl"
+	"github.com/zhangjunfang/im/protocol"
 	"github.com/zhangjunfang/im/route"
 	"github.com/zhangjunfang/im/thriftserver"
 	"github.com/zhangjunfang/im/utils"
@@ -33,7 +33,7 @@ func ServerStart() {
 	go Httpserver()
 	go tsslServer()
 	s := new(Controlloer)
-	s.SetAddr(CF.GetIp())
+	s.SetAddr(common.CF.GetIp())
 	if cluster.IsCluster() {
 		go clusterServer.ServerStart()
 	}
@@ -57,8 +57,8 @@ func (t *Controlloer) Server() {
 		logger.Error("server:", err.Error())
 		panic(err.Error())
 	}
-	handler := new(TimImpl)
-	processor := NewITimProcessor(handler)
+	handler := new(impl.TimImpl)
+	processor := protocol.NewITimProcessor(handler)
 	server := thriftserver.NewTSimpleServer4(processor, serverTransport, transportFactory, protocolFactory)
 	fmt.Println("server listen:", t.ListenAddr())
 	Listen(server, 100)
@@ -101,26 +101,24 @@ func Accept(server *thriftserver.TSimpleServer) (client thrift.TTransport, err e
 }
 
 func tsslServer() {
-	if CF.TLSPort <= 0 && CF.TLSServerPem == "" && CF.TLSServerKey == "" {
+	if common.CF.TLSPort <= 0 && common.CF.TLSServerPem == "" && common.CF.TLSServerKey == "" {
 		return
 	}
-	cer, err := tls.LoadX509KeyPair(CF.TLSServerPem, CF.TLSServerKey)
+	cer, err := tls.LoadX509KeyPair(common.CF.TLSServerPem, common.CF.TLSServerKey)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 	config := &tls.Config{Certificates: []tls.Certificate{cer}}
-	tsslServerSocket, err := thrift.NewTSSLServerSocket(fmt.Sprint(CF.Addr, ":", CF.TLSPort), config)
+	tsslServerSocket, err := thrift.NewTSSLServerSocket(fmt.Sprint(common.CF.Addr, ":", common.CF.TLSPort), config)
 	if err != nil {
-		logger.Error(err.Error())
 		return
 	}
 	err = tsslServerSocket.Listen()
 	if err != nil {
-		logger.Error(err.Error())
 		return
 	}
-	fmt.Println("tls server listen:", CF.TLSPort)
+	fmt.Println("tls server listen:", common.CF.TLSPort)
 	for {
 		client, err := tsslServerSocket.Accept()
 		if err == nil && client != nil {
@@ -138,28 +136,28 @@ func controllerHandler(tt thrift.TTransport) {
 			*gorutineclose = true
 		}
 	}()
-	tu := &TimUser{Client: NewTimClient(tt), OverLimit: 3, Fw: fw.CONNECT, IdCardNo: utils.TimeMills(), Sendflag: make(chan string, 0), Sync: new(sync.Mutex)}
-	TP.AddConnect(tu)
+	tu := &connect.TimUser{Client: NewTimClient(tt), OverLimit: 3, Fw: fw.CONNECT, IdCardNo: utils.TimeMills(), Sendflag: make(chan string, 0), Sync: new(sync.Mutex)}
+	connect.TP.AddConnect(tu)
 	defer func() {
 		if cluster.IsCluster() && tu.UserTid != nil {
-			loginname, err := GetLoginName(tu.UserTid)
+			loginname, err := connect.GetLoginName(tu.UserTid)
 			if loginname != "" && err == nil {
 				cluster.DelLoginnameFromCluter(loginname)
 			}
-			if CF.Presence == 1 {
-				p := OfflinePBean(tu.UserTid)
+			if common.CF.Presence == 1 {
+				p := impl.OfflinePBean(tu.UserTid)
 				go clusterRoute.ClusterRoutePBean(p)
 			} else {
-				go route.RoutePBean(OfflinePBean(tu.UserTid))
+				go route.RoutePBean(impl.OfflinePBean(tu.UserTid))
 			}
-		} else if tu.UserTid != nil && CF.Presence == 1 {
-			go route.RoutePBean(OfflinePBean(tu.UserTid))
+		} else if tu.UserTid != nil && common.CF.Presence == 1 {
+			go route.RoutePBean(impl.OfflinePBean(tu.UserTid))
 		}
-		TP.DeleteTimUser(tu)
+		connect.TP.DeleteTimUser(tu)
 	}()
 	defer func() { tt.Close() }()
 	monitorChan := make(chan string, 2)
-	heartbeat := CF.HeartBeat
+	heartbeat := common.CF.HeartBeat
 	if heartbeat == 0 {
 		heartbeat = 30 * 60
 	}
@@ -194,10 +192,10 @@ func controllerHandler(tt thrift.TTransport) {
 					goto END
 				}
 				checkinCluster++
-				if checkinCluster >= ClusterConf.Keytimeout/3 {
+				if checkinCluster >= common.ClusterConf.Keytimeout/3 {
 					checkinCluster = 0
 					if cluster.IsCluster() && tu.UserTid != nil {
-						loginname, err := GetLoginName(tu.UserTid)
+						loginname, err := connect.GetLoginName(tu.UserTid)
 						if loginname != "" && err == nil {
 							cluster.SetLoginnameToCluster(loginname)
 						}
@@ -212,7 +210,7 @@ func controllerHandler(tt thrift.TTransport) {
 				}
 				tu.OverLimit--
 			} else {
-				logger.Error("auth over time")
+
 				goto END
 			}
 			if tu.Fw == fw.CLOSE {
@@ -224,18 +222,16 @@ func controllerHandler(tt thrift.TTransport) {
 	//	}
 	go TimProcessor(tt, tu, gorutineclose, monitorChan)
 	<-monitorChan
-	//	errormsg := <-monitorChan
-	//	logger.Error("errormsg:", errormsg)
 }
 
-func NewTimClient(tt thrift.TTransport) *ITimClient {
+func NewTimClient(tt thrift.TTransport) *protocol.ImClient {
 	transportFactory := thrift.NewTBufferedTransportFactory(1024)
 	protocolFactory := thrift.NewTCompactProtocolFactory()
 	useTransport := transportFactory.GetTransport(tt)
-	return NewITimClientFactory(useTransport, protocolFactory)
+	return protocol.NewITimClientFactory(useTransport, protocolFactory)
 }
 
-func TimProcessor(client thrift.TTransport, tu *TimUser, gorutineclose *bool, monitorChan chan string) error {
+func TimProcessor(client thrift.TTransport, tu *connect.TimUser, gorutineclose *bool, monitorChan chan string) error {
 	defer func() {
 		if err := recover(); err != nil {
 			//			logger.Error(string(debug.Stack()))
@@ -253,8 +249,8 @@ func TimProcessor(client thrift.TTransport, tu *TimUser, gorutineclose *bool, mo
 	}()
 	compactprotocol := thrift.NewTCompactProtocol(client)
 	pub := strconv.Itoa(time.Now().Nanosecond())
-	handler := &TimImpl{Pub: pub, Client: client, Tu: tu}
-	processor := NewITimProcessor(handler)
+	handler := &impl.TimImpl{Pub: pub, Client: client, Tu: tu}
+	processor := protocol.NewITimProcessor(handler)
 	for {
 		ok, err := processor.Process(compactprotocol, compactprotocol)
 		if err, ok := err.(thrift.TTransportException); ok && err.TypeId() == thrift.END_OF_FILE {

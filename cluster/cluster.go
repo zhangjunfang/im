@@ -28,11 +28,13 @@ type CluserUserBean struct {
 var sha1Addcmd *ScriptCmd
 var sha1Getcmd *ScriptCmd
 
+//集群配置文件解析
 func InitCluster(filexml string) {
+	//解析配置文件  并通过反射给结构体初始化
 	if ClusterConf.Init(filexml) {
-		Redis.initPool()
+		Redis.initPool() //初始化默认连接pool
 		var err error
-		flag, err = Redis.Ping()
+		flag, err = Redis.Ping() //验证redis服务时候正常
 		if !flag && err != nil {
 			logger.Error("redis connect failed:", err.Error())
 			os.Exit(1)
